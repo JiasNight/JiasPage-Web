@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    // 指定ECMAScript目标版本
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    // 指定生成哪个模块系统代码
+    "module": "ESNext",
+    // 决定如何处理模块。
+    "moduleResolution": "Node",
+    // 启用所有严格类型检查选项。
+    // 启用 --strict相当于启用 --noImplicitAny, --noImplicitThis, --alwaysStrict，
+    // --strictNullChecks和 --strictFunctionTypes和--strictPropertyInitialization。
+    "strict": true,
+    "jsx": "preserve",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    // 编译过程中需要引入的库文件的列表
+    "lib": ["ESNext", "DOM"],
+    "skipLibCheck": true,
+    "noEmit": true,
+    // 必须定义 baseUrl
+    "baseUrl": "./",
+    "paths": {
+      // 用于设置模块名到基于baseUrl的路径映射
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "references": [{ "path": "./tsconfig.vite.json" }]
+}
