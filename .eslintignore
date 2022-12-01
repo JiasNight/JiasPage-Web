@@ -3,3 +3,5 @@ dist
 build/*.js
 src/assets
 public
+auto-imports.d.ts
+components.d.ts
