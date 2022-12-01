@@ -4,27 +4,19 @@ const commonRoutes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'index',
-    component: () => import('@/views/index.vue')
+    component: () => import('@/views/Index.vue'),
     // component: () => import('@/App.vue')
     // redirect: '/home'
-    // children: [
-    //   {
-    //     path: 'home',
-    //     name: 'Home',
-    //     meta: {
-    //       title: '首页'
-    //     },
-    //     component: () => import('@/views/home/index.vue')
-    //   }
-    // ]
-  },
-  {
-    path: '/home',
-    name: 'Home',
-    meta: {
-      title: '首页'
-    },
-    component: () => import('@/views/home/index.vue')
+    children: [
+      {
+        path: 'home',
+        name: 'Home',
+        meta: {
+          title: '首页'
+        },
+        component: () => import('@/views/home/index.vue')
+      }
+    ]
   },
   // {
   //   path: '/three',

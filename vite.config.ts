@@ -19,12 +19,15 @@ import * as path from 'path';
 // https://vitejs.dev/config/
 export default ({ mode }) => {
   return defineConfig({
+    define: {
+      'process.env': loadEnv(mode, process.cwd())
+    },
     // 为服务器设置代理规则
     server: {
       host: '127.0.0.1',
       port: 3000, // 设置服务启动端口号
       strictPort: true, // 若端口被占用,直接结束项目
-      https: false, // 是否开启 https
+      https: false, // 是否开启
       cors: true, // 默认启用并允许任何源
       open: false, // 在服务器启动时自动在浏览器中打开
       hmr: {
@@ -40,14 +43,18 @@ export default ({ mode }) => {
         }
       }
     },
-    define: {
-      'process.env': loadEnv(mode, process.cwd())
-    },
     resolve: {
-      alias: {
-        // 取相对路径别名, @表示当前的src目录路径
-        '@': path.resolve(__dirname, 'src')
-      }
+      // 取相对路径别名, @表示当前的src目录路径
+      alias: [
+        {
+          find: '@', // 别名
+          replacement: path.resolve(__dirname, 'src') // 别名对应地址
+        },
+        {
+          find: 'components',
+          replacement: path.resolve(__dirname, 'src/components')
+        }
+      ]
     },
     // 打包相关规则
     build: {

@@ -4,8 +4,22 @@
       <!-- <Header v-show="!headerShow" :headerColor="headerColor"></Header> -->
       <Header :header-color="headerColor"></Header>
     </transition>
+    <!-- 轮播图 -->
+    <div class="container-loop">
+      <v-carousel cycle hide-delimiter-background show-arrows="hover">
+        <v-carousel-item v-for="(item, i) in imgLists" :key="i" :value="i" cover>
+          <v-sheet class="carousel-sheet" height="100%" tile :style="{ backgroundImage: `url(${item.imgSrc})` }">
+            <div class="d-flex fill-height justify-center align-center">
+              <div class="img-text">
+                {{ item.describe }}
+              </div>
+            </div>
+          </v-sheet>
+        </v-carousel-item>
+      </v-carousel>
+    </div>
     <div class="container-body">
-      <!-- 子路由 -->
+      <!-- 首页子路由 -->
       <router-view></router-view>
     </div>
     <Footer></Footer>
@@ -15,7 +29,7 @@
 <script setup lang="ts">
 import { $ref } from 'vue/macros';
 import { petal1, petal2, rain } from '@/assets/base64/index';
-import Header from './layout/header.vue';
+import Header from '@/views/layout/header.vue';
 import Footer from '@/views/layout/footer.vue';
 
 onMounted(() => {
@@ -29,6 +43,46 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll, true);
 });
+
+// 轮播图列表
+interface loopImgType {
+  id: string;
+  label: string;
+  imgSrc: string;
+  describe: string;
+}
+const imgLists: loopImgType[] = reactive([
+  {
+    id: '1',
+    label: 'primary',
+    imgSrc: 'src/assets/images/home/111.jpg',
+    describe: '当你不能再拥有，你唯一可以做的，就是令自己不要忘记。'
+  },
+  {
+    id: '2',
+    label: 'info',
+    imgSrc: 'src/assets/images/home/222.jpg',
+    describe: '虽然你我天各一方，但我们的心却是在一起的。'
+  },
+  {
+    id: '3',
+    label: 'warning',
+    imgSrc: 'src/assets/images/home/333.jpg',
+    describe: '有时，需要一炷香，一个人，将生活关在门外，安静地看看自己。'
+  },
+  {
+    id: '4',
+    label: 'error',
+    imgSrc: 'src/assets/images/home/444.jpg',
+    describe: '千万记得天涯有人在等待。'
+  },
+  {
+    id: '5',
+    label: 'error',
+    imgSrc: 'src/assets/images/home/555.jpg',
+    describe: '曾以为念念不忘的东西，总有一天会变得面目全非。'
+  }
+]);
 
 /**
  * 根据一年不同的月份时间显示背景飘落花瓣，雨水，黄叶，雪花四种效果
@@ -45,7 +99,7 @@ const initBkgTime: any = (): void => {
 /**
  * 判断当前季节
  */
-const currentSeason = (): number => {
+const getCurrentSeason = (): number => {
   let month: number = new Date().getMonth() + 1;
   if (month >= 2 && month <= 4) return 1;
   else if (month >= 5 && month <= 7) return 2;
@@ -55,7 +109,7 @@ const currentSeason = (): number => {
 
 const renderImg = (indexBox: HTMLDivElement): void => {
   // 判断当前时间点处于四季的什么时候，再执行相应时期的动画函数
-  let currentNum: number = currentSeason();
+  let currentNum: number = getCurrentSeason();
   console.log(currentNum);
   switch (currentNum) {
     // 春天
@@ -225,6 +279,23 @@ const handleScroll = () => {
   .fade-enter-from,
   .fade-leave-to {
     opacity: 0;
+  }
+  .container-loop {
+    width: 100%;
+    height: calc(100vh - 50%);
+    .v-sheet {
+      background-repeat: no-repeat;
+      background-size: cover;
+      .img-text {
+        color: #fff;
+        font-size: 30px;
+        padding: 0 5%;
+        cursor: pointer;
+        &:hover {
+          color: aqua;
+        }
+      }
+    }
   }
   .container-body {
     width: 100%;
