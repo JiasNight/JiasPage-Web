@@ -1,7 +1,7 @@
 <template>
   <div class="screen-container">
     <!-- 标题 -->
-    <div class="screen-title"></div>
+    <div class="screen-title">xxx</div>
     <!-- 内容部分 -->
     <div class="screen-chart">
       <div class="content-left">
@@ -53,7 +53,7 @@ const initCurrentThree = () => {
   const cameraPosition = {
     x: 0,
     y: 40,
-    z: 55
+    z: 50
   };
   const lookAtPosition = {
     x: 0,
@@ -77,10 +77,12 @@ const initCurrentThree = () => {
     width: 50%;
     background-image: url('@/assets/images/bigScreen/title-bg.png');
     background-repeat: no-repeat;
-    background-size: contain;
+    background-size: 100%;
     margin: 0 auto;
     text-align: center;
-    border: 1px solid red;
+    color: aliceblue;
+    line-height: 60px;
+    font-size: 30px;
   }
   .screen-chart {
     position: absolute;
@@ -91,12 +93,13 @@ const initCurrentThree = () => {
     align-items: center;
     justify-content: space-between;
     .content-left, .content-right {
-      width: 400px;
+      width: 18%;
       height: calc(100vh - 60px);
       display: flex;
       flex-direction: column;
       justify-content: space-around;
       align-items: center;
+      padding: 0 10px;
       .left-box, .right-box {
         width: 100%;
         height: 250px;

@@ -61,7 +61,7 @@ export default class CreateDivThree {
 
   // 初始化灯光
   initLight() {
-    // 平行光
+    // 平行光 
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
     // const helper = new THREE.DirectionalLightHelper(directionalLight, 5 );
     // this.scene.add(helper);
@@ -116,6 +116,13 @@ export default class CreateDivThree {
     // 将渲染器添加到渲染容器中
     this.canvas.appendChild(this.renderer.domElement);
   }
+
+  // 加载管理器
+  // loadingManager = new THREE.LoadingManager(
+  //   onProgress(url, num, total) => {
+
+  //   }
+  // )
 
   // 循环渲染
   renderThree = () => {
