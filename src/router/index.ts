@@ -18,14 +18,14 @@ const commonRoutes: Array<RouteRecordRaw> = [
       }
     ]
   },
-  // {
-  //   path: '/three',
-  //   name: 'Three',
-  //   meta: {
-  //     title: '首页'
-  //   },
-  //   component: () => import('@/views/three/index.vue')
-  // },
+  {
+    path: '/three',
+    name: 'Three',
+    meta: {
+      title: '首页'
+    },
+    component: () => import('@/views/three/index.vue')
+  },
   {
     path: '/article',
     name: 'Markdown',

@@ -1,7 +1,9 @@
 import * as THREE from 'three';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader';
+// 导入动画库
 import gsap from 'gsap';
 
 export default class CreateDivThree {
@@ -15,12 +17,14 @@ export default class CreateDivThree {
   constructor(dom: string) {
     this.dom = dom;
     this.canvas = document.querySelector(dom);
+    console.log(this.canvas.offsetWidth);
   }
 
   // 初始化场景
   initThree() {
     this.initScene();
     this.initCamera();
+    // this.initAxesHelper();
     this.initLight();
     this.initRenderer();
     this.initControls();
@@ -30,37 +34,50 @@ export default class CreateDivThree {
   // 初始化场景
   initScene() {
     this.scene = new THREE.Scene();
+    // const floorGeometry = new THREE.PlaneGeometry(60, 60, 1);
+    // const floorMaterial = new THREE.MeshPhongMaterial({
+    //   color: 0x77F28F,
+    //   shininess: 0
+    //   // wireframe: true
+    // });
+    // const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+    // floor.rotation.x = -0.5 * Math.PI;
+    // floor.position.y = -2.1;
+    // // 地板接受阴影开启
+    // floor.receiveShadow = true;
+    // this.scene.add(floor);
   }
 
   // 初始化相机
   initCamera() {
-    const width = this.canvas.offsetWidth;
-    const height = this.canvas.offsetHeight;
-    // 相机设置
-    this.camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
+    // 创建透视相机（角度, 宽高比, 最近距离, 最远距离）
+    this.camera = new THREE.PerspectiveCamera(45, this.canvas.offsetWidth / this.canvas.offsetHeight, 1, 100);
     // this.camera.position.set(10, 150, 150);
-    this.camera.position.set(0, 0, 0);
+    // 设置相机的位置（x轴, y轴, z轴）
+    this.camera.position.set(0, 50, 100);
+    // 将相机指向场景中心
     this.camera.lookAt(this.scene.position);
   }
 
   // 初始化灯光
   initLight() {
     // 平行光
-    const directionalLight = new THREE.DirectionalLight(0xdfebff, 0.45);
-    directionalLight.position.set(2000, 2000, 1000).normalize();
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    // const helper = new THREE.DirectionalLightHelper(directionalLight, 5 );
+    // this.scene.add(helper);
     this.scene.add(directionalLight);
-    // 环境光
-    const ambientLight = new THREE.AmbientLight(0x999999);
+    // // 环境光
+    const ambientLight = new THREE.AmbientLight(0x2b2b2b);
     this.scene.add(ambientLight);
     // 点光源
-    const light = new THREE.PointLight(0xffffff);
-    light.position.set(0, 500, 1000);
-    this.scene.add(light);
+    const pointLight = new THREE.PointLight(0xffffff, 1, 0);
+    pointLight.position.set(500, 500, 500);
+    this.scene.add(pointLight);
   }
 
-  initHelper() {
+  initAxesHelper() {
     // 辅助三维坐标系
-    const axesHelper = new THREE.AxesHelper(500);
+    const axesHelper = new THREE.AxesHelper(30);
     this.scene.add(axesHelper);
   }
 
@@ -90,12 +107,14 @@ export default class CreateDivThree {
       // 开启背景透明
       alpha: true
     });
+    // 设置渲染器的初始颜色（十六进制颜色, 透明度）
+    // this.renderer.setClearColor(0x333333, 1);
     // 为了兼容高清屏幕
     this.renderer.setPixelRatio(window.devicePixelRatio);
-    // 改成这样就可以居中
+    // 设置渲染器大小（标签宽度, 标签高度）, 改成这样就可以居中
     this.renderer.setSize(width, height);
+    // 将渲染器添加到渲染容器中
     this.canvas.appendChild(this.renderer.domElement);
-    // this.renderer.setClearColor('#1e1e1e');
   }
 
   // 循环渲染
@@ -107,9 +126,9 @@ export default class CreateDivThree {
   };
 
   onWindowResize() {
-    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.aspect = this.canvas.offsetWidth / this.canvas.offsetHeight;
     this.camera.updateProjectionMatrix();
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setSize(this.canvas.offsetWidth, this.canvas.offsetHeight);
   }
 
   windowResize() {
@@ -117,11 +136,11 @@ export default class CreateDivThree {
   }
 
   // 声明一个方法传入参数可以在不同的地方调用相机
-  cameraReset(position: any, lookAt: any, time = 1) {
+  cameraReset(cameraPosition: any, lookAtPosition: any, time = 5) {
     gsap.to(this.camera.position, {
-      x: position.x,
-      y: position.y,
-      z: position.z,
+      x: cameraPosition.x,
+      y: cameraPosition.y,
+      z: cameraPosition.z,
       duration: time,
       ease: 'power4.out'
       // onComplete: function () {
@@ -129,43 +148,71 @@ export default class CreateDivThree {
       // }
     });
     gsap.to(this.camera.lookAt, {
-      x: lookAt.x,
-      y: lookAt.y,
-      z: lookAt.z,
+      x: lookAtPosition.x,
+      y: lookAtPosition.y,
+      z: lookAtPosition.z,
       duration: time,
       ease: 'power4.out'
-    });
-    gsap.to(this.camera.target, {
-      x: lookAt.x,
-      y: lookAt.y,
-      z: lookAt.z,
-      duration: time,
-      ease: 'power4.out'
+      // onComplete: function () {
+      // 这是相机运动完成的回调,可以执行其他的方法.
+      // }
     });
   }
 
   // 加载模型
-  loadModel(modelPath: string, modelName: string) {
-    const gltfLoader = new GLTFLoader();
-    gltfLoader.setPath(modelPath);
-    gltfLoader.load(
-      modelName,
-      (gltf: any) => {
-        const loadscene = gltf.scene;
-        //  投影
-        loadscene.castShadow = true;
-        // 设置大小比例
-        loadscene.scale.set(90, 80, 80);
-        const wrapper = new THREE.Object3D();
-        //模型在场景中的为准, x:左右，y:高低，x：上下
-        wrapper.position.set(320, 0, 200);
-        wrapper.add(loadscene);
-        wrapper.rotation.set(0, Math.PI / 2, 0);
-        this.scene.add(wrapper);
+  objLoadModel(modelPath: string) {
+    const objLoader = new OBJLoader();
+    objLoader.load(
+      modelPath,
+      (obj: any) => {
+        // console.log(obj);
+        // obj.traverse((item: any) => {
+        //   console.log(item);
+        //   if (item instanceof THREE.Mesh) {
+        //     item.material = new THREE.MeshBasicMaterial({color: '0x0f0f'});
+        //   }
+        // });
+        // 将 OBJ 模型添加到场景中
+        this.scene.add(obj);
+        // 设置 OBJ 模型居中
+        obj.children[0].geometry.center();
+                
+        // 设置 OBJ 模型缩放大小
+        // obj.children[0].scale.set(100, 100, 100);
       },
       (xhr: any) => {
         // 控制台查看加载进度xhr
-        console.log(Math.floor((xhr.loaded / xhr.total) * 100));
+        // console.log(Math.floor((xhr.loaded / xhr.total) * 100));
+      },
+      (error: any) => {
+        // 加载出错
+        console.log(error);
+      }
+    );
+  }
+
+  // 加载模型
+  gltfLoadModel(modelPath: string) {
+    const gltfLoader = new GLTFLoader();
+    gltfLoader.load(
+      modelPath,
+      (gltf: any) => {
+        const loadscene = gltf.scene;
+        // //  投影
+        // loadscene.castShadow = true;
+        // // 设置大小比例
+        // loadscene.scale.set(30, 30, 30);
+        // const wrapper = new THREE.Object3D();
+        // //模型在场景中的为准, x:左右，y:高低，x：上下
+        // wrapper.position.set(0, 150, 0);
+        // wrapper.add(loadscene);
+        // wrapper.rotation.set(0, Math.PI / 2, 0);
+        // this.scene.add(wrapper);
+        this.scene.add(loadscene);
+      },
+      (xhr: any) => {
+        // 控制台查看加载进度xhr
+        // console.log(Math.floor((xhr.loaded / xhr.total) * 100));
       },
       (error: any) => {
         // 加载出错
